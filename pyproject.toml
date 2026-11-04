@@ -1,7 +1,7 @@
 [project]
 name = "gh-stars"
 version = "0.1.0"
-description = "Add your description here"
+description = "输入 GitHub 用户名，输出仓库 star 排行榜并存成 CSV"
 readme = "README.md"
 authors = [
     { name = "qinwang499", email = "qiwangling@qq.com" }
@@ -13,7 +13,7 @@ dependencies = [
 ]
 
 [project.scripts]
-gh-stars = "gh_stars:main"
+gh-stars = "gh_stars.core:main"
 
 [build-system]
 requires = ["uv_build>=0.13.0,<0.14.0"]

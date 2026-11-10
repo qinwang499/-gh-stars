@@ -50,5 +50,8 @@ def main() -> None:
     except KeyboardInterrupt:
         print("\n已取消")
         sys.exit(130)
+    except EOFError:
+        print("错误：没有读到输入，已退出")
+        sys.exit(1)
     finally:
         print("程序结束")

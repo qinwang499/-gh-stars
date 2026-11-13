@@ -3,6 +3,7 @@
 import logging
 import sys
 
+from gh_stars.cli import parse_args
 from gh_stars.config import GITHUB_API, TIMEOUT
 from gh_stars.errors import GhStarsError, UserNotFoundError
 
@@ -46,14 +47,12 @@ def run(user: str) -> None:
 
 
 def main() -> None:
-    """入口：负责接住所有业务异常，给出人话。"""
+    """入口：解析参数，接住异常，给出人话。"""
+    args = parse_args()
+    logger.debug("收到参数：%r", args)
+
     try:
-        if len(sys.argv) > 1:
-            user = sys.argv[1]
-        else:
-            user = input("请输入 GitHub 用户名：")
-        logger.debug("收到参数：%r", user)
-        run(user)
+        run(args.user)
     except GhStarsError as e:
         logger.error("业务异常：%s", e)
         print(f"错误：{e}")
@@ -62,10 +61,6 @@ def main() -> None:
         logger.info("用户取消")
         print("\n已取消")
         sys.exit(130)
-    except EOFError:
-        logger.error("没有读到输入")
-        print("错误：没有读到输入，已退出")
-        sys.exit(1)
     finally:
         logger.info("程序结束")
         print("程序结束")

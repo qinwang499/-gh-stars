@@ -5,4 +5,4 @@ __pycache__/
 .env
 *.log
 .idea/
-.DS_Store
+.DS_Storestars.csv

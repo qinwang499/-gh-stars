@@ -3,9 +3,10 @@
 import logging
 import sys
 
+from gh_stars.api import fetch_repos, parse_repos
 from gh_stars.cli import parse_args
-from gh_stars.config import GITHUB_API, TIMEOUT
 from gh_stars.errors import GhStarsError, UserNotFoundError
+from gh_stars.render import print_table, save_csv, sort_by_stars
 
 logger = logging.getLogger("gh_stars.core")
 
@@ -36,13 +37,22 @@ def validate_username(name: str) -> str:
     return name
 
 
-def run(user: str) -> None:
+def run(user: str, top: int, output: str) -> None:
     """真正干活的函数，出错就往上抛。"""
     logger.info("开始处理用户：%s", user)
     user = validate_username(user)
     print(f"查询用户：{user}")
-    print(f"API 地址：{GITHUB_API}")
-    print(f"超时时间：{TIMEOUT} 秒")
+
+    raw = fetch_repos(user)
+    repos = parse_repos(raw)
+    repos = sort_by_stars(repos, top)
+
+    print()
+    print_table(repos)
+    print()
+
+    save_csv(repos, output)
+    print(f"已保存到 {output}")
     logger.info("处理完成：%s", user)
 
 
@@ -52,7 +62,7 @@ def main() -> None:
     logger.debug("收到参数：%r", args)
 
     try:
-        run(args.user)
+        run(args.user, args.top, args.output)
     except GhStarsError as e:
         logger.error("业务异常：%s", e)
         print(f"错误：{e}")
